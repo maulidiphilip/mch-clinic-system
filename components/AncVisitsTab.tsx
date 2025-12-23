@@ -19,7 +19,17 @@ import { format } from "date-fns";
 import { createAncVisit } from "@/actions/ancActions";
 
 type Patient = { id: number; fullName: string };
-type AncVisit = any;
+type AncVisit = {
+  id: number;
+  visitDate: string;
+  gestationalAge: number | null;
+  weight: number | null;
+  bpSystolic: number | null;
+  bpDiastolic: number | null;
+  fetalHeartRate: number | null;
+  riskFactors: string[] | null;
+  notes: string | null;
+};
 
 export default function AncVisitsTab({
   patient,

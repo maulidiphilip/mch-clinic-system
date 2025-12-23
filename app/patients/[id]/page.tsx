@@ -46,13 +46,13 @@ export default async function PatientDetailPage({
     patient.type === "child" ? await getGrowthRecords(patientId) : [];
 
   const hasHighRisk =
-    patient.type === "mother" &&
-    ancVisits.some(
-      (v: any) =>
-        (v.bpSystolic && v.bpSystolic >= 140) ||
-        (v.bpDiastolic && v.bpDiastolic >= 90) ||
-        (v.riskFactors && v.riskFactors.length > 0)
-    );
+  patient.type === "mother" &&
+  ancVisits.some(
+    (v) =>
+      (v.bpSystolic && v.bpSystolic >= 140) ||
+      (v.bpDiastolic && v.bpDiastolic >= 90) ||
+      (v.riskFactors && v.riskFactors.length > 0)
+  );
 
   return (
     <div className="min-h-screen bg-emerald-50 text-slate-900">

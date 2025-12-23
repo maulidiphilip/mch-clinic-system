@@ -34,8 +34,8 @@ type Immunization = {
 type GrowthRecord = {
   id: number;
   recordDate: string;
-  weightKg: number;
-  heightCm: number;
+  weightKg: number | null;
+  heightCm: number | null;
 };
 
 type Props = {
@@ -45,7 +45,12 @@ type Props = {
   growthRecords: GrowthRecord[];
 };
 
-export default function FhirExportButton({ patient, ancVisits, immunizations, growthRecords }: Props) {
+export default function FhirExportButton({
+  patient,
+  ancVisits,
+  immunizations,
+  growthRecords,
+}: Props) {
   const generateFhirBundle = () => {
     const entries: any[] = [];
 
@@ -55,10 +60,14 @@ export default function FhirExportButton({ patient, ancVisits, immunizations, gr
       resource: {
         resourceType: "Patient",
         id: patient.patientId,
-        identifier: [{ system: "http://moh.mw/mchis/id", value: patient.patientId }],
+        identifier: [
+          { system: "http://moh.mw/mchis/id", value: patient.patientId },
+        ],
         name: [{ text: patient.fullName }],
         birthDate: patient.dateOfBirth || undefined,
-        telecom: patient.phone ? [{ system: "phone", value: patient.phone }] : [],
+        telecom: patient.phone
+          ? [{ system: "phone", value: patient.phone }]
+          : [],
         address: patient.village ? [{ text: patient.village }] : [],
       },
     });
@@ -81,27 +90,53 @@ export default function FhirExportButton({ patient, ancVisits, immunizations, gr
         });
 
         // Vital signs as Observations
-        const addObs = (loinc: string, display: string, value?: number, unit?: string) => {
+        const addObs = (
+          loinc: string,
+          display: string,
+          value?: number,
+          unit?: string
+        ) => {
           if (value !== null && value !== undefined) {
             entries.push({
               fullUrl: `Observation/anc-${loinc}-${visit.id}`,
               resource: {
                 resourceType: "Observation",
                 status: "final",
-                code: { coding: [{ system: "http://loinc.org", code: loinc, display }] },
+                code: {
+                  coding: [
+                    { system: "http://loinc.org", code: loinc, display },
+                  ],
+                },
                 subject: { reference: `Patient/${patient.patientId}` },
                 encounter: { reference: `Encounter/${encounterId}` },
                 effectiveDateTime: visit.visitDate,
-                valueQuantity: unit ? { value, unit, system: "http://unitsofmeasure.org" } : undefined,
+                valueQuantity: unit
+                  ? { value, unit, system: "http://unitsofmeasure.org" }
+                  : undefined,
               },
             });
           }
         };
 
-        addObs("29463-7", "Body weight", visit.weight, "kg");
-        addObs("8480-6", "Systolic blood pressure", visit.bpSystolic, "mm[Hg]");
-        addObs("8462-4", "Diastolic blood pressure", visit.bpDiastolic, "mm[Hg]");
-        addObs("9279-1", "Fetal heart rate", visit.fetalHeartRate, "/min");
+        addObs("29463-7", "Body weight", visit.weight ?? undefined, "kg");
+        addObs(
+          "8480-6",
+          "Systolic blood pressure",
+          visit.bpSystolic ?? undefined,
+          "mm[Hg]"
+        );
+        addObs(
+          "8462-4",
+          "Diastolic blood pressure",
+          visit.bpDiastolic ?? undefined,
+          "mm[Hg]"
+        );
+        addObs(
+          "9279-1",
+          "Fetal heart rate",
+          visit.fetalHeartRate ?? undefined,
+          "/min"
+        );
         if (visit.gestationalAge) {
           addObs("11884-4", "Gestational age", visit.gestationalAge, "wk");
         }
@@ -145,10 +180,18 @@ export default function FhirExportButton({ patient, ancVisits, immunizations, gr
         resource: {
           resourceType: "Observation",
           status: "final",
-          code: { coding: [{ system: "http://loinc.org", code: "29463-7", display: "Body weight" }] },
+          code: {
+            coding: [
+              {
+                system: "http://loinc.org",
+                code: "29463-7",
+                display: "Body weight",
+              },
+            ],
+          },
           subject: { reference: `Patient/${patient.patientId}` },
           effectiveDateTime: growth.recordDate,
-          valueQuantity: { value: growth.weightKg, unit: "kg" },
+          valueQuantity: { value: growth.weightKg ?? 0, unit: "kg" },
         },
       });
       entries.push({
@@ -156,7 +199,15 @@ export default function FhirExportButton({ patient, ancVisits, immunizations, gr
         resource: {
           resourceType: "Observation",
           status: "final",
-          code: { coding: [{ system: "http://loinc.org", code: "8302-2", display: "Body height" }] },
+          code: {
+            coding: [
+              {
+                system: "http://loinc.org",
+                code: "8302-2",
+                display: "Body height",
+              },
+            ],
+          },
           subject: { reference: `Patient/${patient.patientId}` },
           effectiveDateTime: growth.recordDate,
           valueQuantity: { value: growth.heightCm, unit: "cm" },

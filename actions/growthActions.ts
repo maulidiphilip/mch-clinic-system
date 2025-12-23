@@ -21,7 +21,7 @@ export async function createGrowthRecord(formData: FormData) {
     recordDate: formData.get("recordDate") as string,
     weightKg: Number(formData.get("weightKg")),
     heightCm: Number(formData.get("heightCm")),
-    notes: (formData.get("notes") as string) || null,
+    // Removed 'notes' — not in schema
   });
 
   revalidatePath(`/patients/${patientId}`);
