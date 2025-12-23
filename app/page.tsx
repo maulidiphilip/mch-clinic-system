@@ -1,65 +1,108 @@
-import Image from "next/image";
+import { getPatients } from "@/actions/patientActions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Baby, Users, UserPlus } from "lucide-react";
+import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
+  const patients = await getPatients();
+
+  const mothers = patients.filter((p) => p.type === "mother").length;
+  const children = patients.filter((p) => p.type === "child").length;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        
+        {/* Page Header */}
+        <div className="mb-10">
+          <h1 className="text-3xl sm:text-4xl font-bold text-emerald-900 tracking-tight">
+            MCH Clinic Dashboard 🇲🇼
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-emerald-700 mt-2 max-w-2xl">
+            Digitally managing maternal and child health services for improved
+            care, follow-up, and reporting.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Stats Cards */}
+        <div className="grid gap-6 md:grid-cols-3 mb-14">
+          
+          {/* Mothers */}
+          <Card className="border-emerald-200 shadow-sm hover:shadow-md transition">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-emerald-800">
+                Registered Mothers
+              </CardTitle>
+              <div className="p-2 rounded-full bg-emerald-100 text-emerald-700">
+                <Baby className="h-5 w-5" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-emerald-900">
+                {mothers}
+              </div>
+              <p className="text-xs text-emerald-600 mt-1">
+                Receiving antenatal care (ANC)
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Children */}
+          <Card className="border-emerald-200 shadow-sm hover:shadow-md transition">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-emerald-800">
+                Registered Children
+              </CardTitle>
+              <div className="p-2 rounded-full bg-green-100 text-green-700">
+                <Users className="h-5 w-5" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-emerald-900">
+                {children}
+              </div>
+              <p className="text-xs text-emerald-600 mt-1">
+                Immunization & growth monitoring
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total */}
+          <Card className="border-emerald-200 shadow-sm hover:shadow-md transition">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-emerald-800">
+                Total Patients
+              </CardTitle>
+              <div className="p-2 rounded-full bg-teal-100 text-teal-700">
+                <UserPlus className="h-5 w-5" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-emerald-900">
+                {patients.length}
+              </div>
+              <p className="text-xs text-emerald-600 mt-1">
+                Active in the clinic system
+              </p>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+
+        {/* Call to Action */}
+        <div className="flex justify-center">
+          <Link href="/patients">
+            <Button
+              size="lg"
+              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
+            >
+              <UserPlus className="h-5 w-5" />
+              Manage Patients
+            </Button>
+          </Link>
+        </div>
+
+      </div>
     </div>
   );
 }
