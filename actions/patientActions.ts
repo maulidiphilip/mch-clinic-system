@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/db/drizzle";
 import { patients } from "@/db/schema";
-import { eq } from "drizzle-orm";
 
 export async function getPatients() {
   return await db.select().from(patients).orderBy(patients.createdAt);

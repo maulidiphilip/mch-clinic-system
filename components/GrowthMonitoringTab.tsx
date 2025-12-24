@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+// Removed unused Textarea import
 import { AlertTriangle } from "lucide-react";
 import { format, differenceInMonths } from "date-fns";
 import {
@@ -30,9 +30,8 @@ type GrowthRecord = {
   heightCm: number | null;
 };
 
-// Simple approximate median values (WHO) for demo
-const approxWeightMedian = [3.3, 7.5, 9.5, 11, 12.5, 14, 15.5, 17, 18.5]; // kg at 0,6,12,... months
-const approxHeightMedian = [50, 65, 75, 82, 88, 93, 98, 103, 108]; // cm
+const approxWeightMedian = [3.3, 7.5, 9.5, 11, 12.5, 14, 15.5, 17, 18.5];
+const approxHeightMedian = [50, 65, 75, 82, 88, 93, 98, 103, 108];
 
 function approximateZScore(value: number | null, ageMonths: number, medians: number[]) {
   if (value === null) return null;
@@ -59,13 +58,12 @@ export default function GrowthMonitoringTab({
       const weightZ = approximateZScore(r.weightKg, ageMonths, approxWeightMedian);
       const heightZ = approximateZScore(r.heightCm, ageMonths, approxHeightMedian);
 
-      // Only include if we have valid numbers for charting
       if (r.weightKg === null && r.heightCm === null) return null;
 
       return {
         date: format(new Date(r.recordDate), "MMM yyyy"),
         ageMonths,
-        weight: r.weightKg ?? undefined,  // Recharts ignores undefined
+        weight: r.weightKg ?? undefined,
         height: r.heightCm ?? undefined,
         weightZ: weightZ !== null ? weightZ.toFixed(1) : "-",
         heightZ: heightZ !== null ? heightZ.toFixed(1) : "-",
@@ -73,10 +71,11 @@ export default function GrowthMonitoringTab({
         heightFlag: heightZ !== null && heightZ < -2 ? (heightZ < -3 ? "severe" : "moderate") : "normal",
       };
     })
-    .filter(Boolean); // Remove null entries
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
+  // Fixed: No more 'any' — proper typing
   const hasMalnutrition = data.some(
-    (d: any) => d.weightFlag !== "normal" || d.heightFlag !== "normal"
+    (d) => d.weightFlag !== "normal" || d.heightFlag !== "normal"
   );
 
   return (

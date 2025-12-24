@@ -29,6 +29,7 @@ type AncVisit = {
   fetalHeartRate: number | null;
   riskFactors: string[] | null;
   notes: string | null;
+  nextAppointment: string | null;
 };
 
 export default function AncVisitsTab({
@@ -42,7 +43,6 @@ export default function AncVisitsTab({
 
   return (
     <div className="space-y-8">
-
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-emerald-900">
@@ -85,7 +85,11 @@ export default function AncVisitsTab({
 
                 <div>
                   <Label>Gestational Age (weeks)</Label>
-                  <Input type="number" name="gestationalAge" placeholder="e.g. 28" />
+                  <Input
+                    type="number"
+                    name="gestationalAge"
+                    placeholder="e.g. 28"
+                  />
                 </div>
 
                 <div>
@@ -147,18 +151,16 @@ export default function AncVisitsTab({
         </Card>
       ) : (
         <div className="grid gap-6">
-          {ancVisits.map((visit: any) => {
+          {ancVisits.map((visit) => {
             const isHighBp =
-              (visit.bpSystolic && visit.bpSystolic >= 140) ||
-              (visit.bpDiastolic && visit.bpDiastolic >= 90);
+              (visit.bpSystolic !== null && visit.bpSystolic >= 140) ||
+              (visit.bpDiastolic !== null && visit.bpDiastolic >= 90);
 
             return (
               <Card
                 key={visit.id}
                 className={`shadow-sm ${
-                  isHighBp
-                    ? "border-red-300 bg-red-50"
-                    : "border-emerald-200"
+                  isHighBp ? "border-red-300 bg-red-50" : "border-emerald-200"
                 }`}
               >
                 <CardHeader>
@@ -169,24 +171,35 @@ export default function AncVisitsTab({
 
                     <div className="flex gap-2">
                       {isHighBp && (
-                        <Badge className="bg-red-600 text-white">
-                          High BP
-                        </Badge>
+                        <Badge className="bg-red-600 text-white">High BP</Badge>
                       )}
-                      {visit.riskFactors?.length > 0 && (
-                        <Badge className="bg-orange-500 text-white">
-                          Risk Factors
-                        </Badge>
-                      )}
+                      {Array.isArray(visit.riskFactors) &&
+                        visit.riskFactors.length > 0 && (
+                          <Badge className="bg-orange-500 text-white">
+                            Risk Factors
+                          </Badge>
+                        )}
                     </div>
                   </div>
                 </CardHeader>
 
                 <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-emerald-900">
-                  <div><span className="font-medium">GA:</span> {visit.gestationalAge || "-"} wks</div>
-                  <div><span className="font-medium">Weight:</span> {visit.weight || "-"} kg</div>
-                  <div><span className="font-medium">BP:</span> {visit.bpSystolic || "-"}/{visit.bpDiastolic || "-"}</div>
-                  <div><span className="font-medium">FHR:</span> {visit.fetalHeartRate || "-"} bpm</div>
+                  <div>
+                    <span className="font-medium">GA:</span>{" "}
+                    {visit.gestationalAge || "-"} wks
+                  </div>
+                  <div>
+                    <span className="font-medium">Weight:</span>{" "}
+                    {visit.weight || "-"} kg
+                  </div>
+                  <div>
+                    <span className="font-medium">BP:</span>{" "}
+                    {visit.bpSystolic || "-"}/{visit.bpDiastolic || "-"}
+                  </div>
+                  <div>
+                    <span className="font-medium">FHR:</span>{" "}
+                    {visit.fetalHeartRate || "-"} bpm
+                  </div>
 
                   {visit.nextAppointment && (
                     <div className="col-span-2 md:col-span-4 text-emerald-700">

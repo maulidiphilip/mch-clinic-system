@@ -2,7 +2,16 @@ import { Badge } from "@/components/ui/badge";
 import { Baby, User, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 
-export default function PatientCard({ patient }: any) {
+type PatientProps = {
+  id: number;
+  patientId: string;
+  fullName: string;
+  type: "mother" | "child";
+  village: string | null;
+  phone: string | null;
+};
+
+export default function PatientCard({ patient }: { patient: PatientProps }) {
   const isMother = patient.type === "mother";
 
   return (

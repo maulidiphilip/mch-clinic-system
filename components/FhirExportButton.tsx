@@ -52,7 +52,7 @@ export default function FhirExportButton({
   growthRecords,
 }: Props) {
   const generateFhirBundle = () => {
-    const entries: any[] = [];
+    const entries: { fullUrl: string; resource: unknown }[] = [];
 
     // 1. Patient Resource
     entries.push({
@@ -191,7 +191,7 @@ export default function FhirExportButton({
           },
           subject: { reference: `Patient/${patient.patientId}` },
           effectiveDateTime: growth.recordDate,
-          valueQuantity: { value: growth.weightKg ?? 0, unit: "kg" },
+          valueQuantity: { value: growth.weightKg, unit: "kg" },
         },
       });
       entries.push({

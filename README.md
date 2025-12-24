@@ -2,8 +2,8 @@
 
 **A full-stack digital health application** designed to support frontline health workers in Malawi by digitizing antenatal care (ANC), immunization tracking, and child growth monitoring at the clinic level.
 
-**Live Demo**: [Deploy on Vercel](https://your-project-name.vercel.app) *(replace with your actual link)*  
-**GitHub Repository**: [github.com/maulidiphilip/mch-clinic-system](https://github.com/maulidiphilip/mch-clinic-system) *(update if needed)*  
+**Live Demo**: [Deploy on Vercel](https://mch-clinic-system.vercel.app) *  
+**GitHub Repository**: [github.com/maulidiphilip/mch-clinic-system](https://github.com/maulidiphilip/mch-clinic-system) 
 **Portfolio**: [philip-maulidi-wqoz.vercel.app](https://philip-maulidi-wqoz.vercel.app)
 
 ## Project Overview
